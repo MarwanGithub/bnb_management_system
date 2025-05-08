@@ -1,0 +1,30 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Delete Expense - BnB Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col">
+    <h2>Delete Expense</h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <p class="alert alert-danger">
+          Are you sure you want to delete the expense "{{ object.category }} - ${{ object.amount }}"
+          from {{ object.date }}?
+          This action cannot be undone.
+        </p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+          <a href="{% url 'expense_list' object.property.id %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

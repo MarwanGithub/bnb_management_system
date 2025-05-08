@@ -1,0 +1,30 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Delete Property - BnB Manager{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col">
+    <h2>Delete Property</h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <p class="alert alert-danger">
+          Are you sure you want to delete the property "{{ object.name }}"?
+          This will also delete all bookings and expenses associated with this property.
+          This action cannot be undone.
+        </p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+          <a href="{% url 'property_detail' object.pk %}" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

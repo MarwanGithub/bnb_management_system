@@ -1,0 +1,77 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Calendar - BnB Manager{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
+<style>
+  /* Custom calendar styling */
+  .fc-daygrid-day-number {
+    font-weight: bold;
+  }
+  
+  /* Make the day numbers more visible */
+  .fc-daygrid-day-top {
+    z-index: 5;
+  }
+  
+  /* Show day number on top of events */
+  .fc .fc-daygrid-day-top {
+    position: relative;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-8">
+    <h2>Calendar for {{ property.name }}</h2>
+  </div>
+  <div class="col-md-4 text-end">
+    <a href="{% url 'booking_create' property.id %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Add Booking
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div id="calendar"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="{% url 'property_detail' property.id %}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Property
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek'
+      },
+      events: JSON.parse('{{ bookings_json|escapejs }}'),
+      height: 'auto',
+      selectable: true,
+      select: function(info) {
+        // Redirect to create booking with pre-filled dates
+        window.location.href = "{% url 'booking_create' property.id %}?start_date=" + info.startStr + "&end_date=" + info.endStr;
+      }
+    });
+    calendar.render();
+  });
+</script>
+{% endblock %} 
