@@ -32,8 +32,7 @@ class Booking(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     guest_name = models.CharField(max_length=100)
-    guest_email = models.EmailField()
-    guest_phone = models.CharField(max_length=20, blank=True, null=True, help_text="Guest's contact phone number")
+    guest_phone = models.CharField(max_length=20, help_text="Guest's contact phone number")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_confirmed = models.BooleanField(default=False)
     

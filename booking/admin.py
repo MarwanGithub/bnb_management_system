@@ -10,7 +10,7 @@ class PropertyAdmin(admin.ModelAdmin):
 class BookingAdmin(admin.ModelAdmin):
     list_display = ('property', 'guest_name', 'start_date', 'end_date', 'total_amount', 'is_confirmed')
     list_filter = ('property', 'is_confirmed', 'start_date')
-    search_fields = ('guest_name', 'guest_email')
+    search_fields = ('guest_name', 'guest_phone')
     date_hierarchy = 'start_date'
 
 @admin.register(ExpenseCategory)

@@ -7,7 +7,7 @@ class DateInput(forms.DateInput):
 class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
-        fields = ['property', 'start_date', 'end_date', 'guest_name', 'guest_email', 'guest_phone', 'is_confirmed']
+        fields = ['property', 'start_date', 'end_date', 'guest_name', 'guest_phone', 'is_confirmed']
         widgets = {
             'start_date': DateInput(),
             'end_date': DateInput(),
