@@ -29,6 +29,7 @@
         <thead>
           <tr>
             <th>Guest</th>
+            <th>Phone</th>
             <th>Check-in</th>
             <th>Check-out</th>
             <th>Nights</th>
@@ -41,6 +42,7 @@
           {% for booking in bookings %}
             <tr>
               <td>{{ booking.guest_name }}</td>
+              <td>{{ booking.guest_phone }}</td>
               <td>{{ booking.start_date }}</td>
               <td>{{ booking.end_date }}</td>
               <td>{{ booking.days_count }}</td>

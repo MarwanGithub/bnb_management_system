@@ -67,6 +67,16 @@ class BookingExpenseForm(forms.ModelForm):
                 self.instance.property = booking.property
 
 class PropertyForm(forms.ModelForm):
+    address = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'rows': 3,
+            'cols': 40,
+            'style': 'resize: vertical;'
+        }),
+        required=False,
+        help_text="(Optional) Enter the property address"
+    )
+    
     class Meta:
         model = Property
-        fields = ['name', 'address', 'daily_rate'] 
+        fields = ['name', 'daily_rate', 'address'] 

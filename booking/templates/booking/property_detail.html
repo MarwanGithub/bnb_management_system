@@ -96,6 +96,7 @@
                         <thead>
                             <tr>
                                 <th>Guest</th>
+                                <th>Phone</th>
                                 <th>Dates</th>
                                 <th>Nights</th>
                                 <th>Amount</th>
@@ -107,6 +108,7 @@
                             {% for booking in current_bookings %}
                             <tr>
                                 <td>{{ booking.guest_name }}</td>
+                                <td>{{ booking.guest_phone }}</td>
                                 <td>{{ booking.start_date|date:"M d, Y" }} - {{ booking.end_date|date:"M d, Y" }}</td>
                                 <td>{{ booking.days_count }}</td>
                                 <td>EGP {{ booking.total_amount }}</td>
