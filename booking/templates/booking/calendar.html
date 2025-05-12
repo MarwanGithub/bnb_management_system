@@ -10,14 +10,38 @@
     font-weight: bold;
   }
   
-  /* Make the day numbers more visible */
   .fc-daygrid-day-top {
     z-index: 5;
   }
   
-  /* Show day number on top of events */
   .fc .fc-daygrid-day-top {
     position: relative;
+  }
+
+  /* --- Styling for Booked Events (Professional Blue) --- */
+  .fc-daygrid-event { /* Or use .fc-event for all event types */
+    /* Professional Blue */
+    background-color: #42A5F5 !important; 
+    border-color: #1E88E5 !important;     /* A slightly darker shade for the border */
+    color: white !important;              /* Text color for the event */
+
+    /* Other visual enhancements for the event bar */
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    align-items: center; /* Vertically center content */
+    display: flex;       /* Use flex for better alignment */
+    border-radius: 4px;  /* Soften corners */
+  }
+
+  .fc-event-main {
+    /* Ensures the inner content takes up space and is styled */
+    padding: 2px 4px;    /* Internal padding for event content */
+    font-size: 0.85em;   /* Adjust font size if necessary */
+    line-height: 1.4;    /* Improve text readability */
+  }
+
+  .fc-event-title {
+    font-weight: bold;   /* Make event title bold */
   }
 </style>
 {% endblock %}
@@ -38,7 +62,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
-        <div id="calendar"></div>
+        <div id="calendar"></div> {# THIS IS WHERE THE CALENDAR IS RENDERED #}
       </div>
     </div>
   </div>
@@ -67,11 +91,10 @@
       height: 'auto',
       selectable: true,
       select: function(info) {
-        // Redirect to create booking with pre-filled dates
         window.location.href = "{% url 'booking_create' property.id %}?start_date=" + info.startStr + "&end_date=" + info.endStr;
       }
     });
     calendar.render();
   });
 </script>
-{% endblock %} 
+{% endblock %}
