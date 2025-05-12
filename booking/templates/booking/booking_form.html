@@ -18,10 +18,44 @@
       <div class="card-body">
         <form method="post">
           {% csrf_token %}
-          {{ form|crispy }}
-          <button type="button" class="btn btn-sm btn-outline-secondary mb-3" id="today-button">
-            Set Today as Start Date
-          </button>
+          
+          {# Property field #}
+          {{ form.property|as_crispy_field }}
+          
+          {# Start date field with buttons #}
+          <div class="form-group">
+            <label for="id_start_date">Start date</label>
+            <div class="input-group mb-2">
+              <input type="date" name="start_date" id="id_start_date" class="form-control"
+                     value="{{ form.start_date.value|date:'Y-m-d' }}" required>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-primary" id="today-button">
+                  <i class="fas fa-calendar-day"></i> Today
+                </button>
+                <button type="button" class="btn btn-outline-success" id="next-available-button">
+                  <i class="fas fa-calendar-check"></i> Next
+                </button>
+              </div>
+            </div>
+            {% if form.start_date.help_text %}
+              <small class="form-text text-muted">{{ form.start_date.help_text }}</small>
+            {% endif %}
+            {% if form.start_date.errors %}
+              <div class="invalid-feedback d-block">
+                {% for error in form.start_date.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          
+          {# Remaining fields #}
+          {% for field in form %}
+            {% if field.name != 'property' and field.name != 'start_date' %}
+              {{ field|as_crispy_field }}
+            {% endif %}
+          {% endfor %}
+          
           <div class="mt-3">
             <button type="submit" class="btn btn-primary">Save</button>
             {% if form.instance.pk %}
@@ -94,10 +128,13 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Get the Today button and start_date field
+    // Get the buttons and form fields
     const todayButton = document.getElementById('today-button');
+    const nextAvailableButton = document.getElementById('next-available-button');
     const startDateField = document.getElementById('id_start_date');
+    const propertyField = document.getElementById('id_property');
     
+    // Today button functionality
     todayButton.addEventListener('click', function() {
       // Get today's date in YYYY-MM-DD format
       const today = new Date();
@@ -108,6 +145,43 @@
       
       // Set the start_date field value to today's date
       startDateField.value = formattedDate;
+    });
+    
+    // Next available date button functionality
+    nextAvailableButton.addEventListener('click', function() {
+      const propertyId = propertyField.value;
+      
+      if (!propertyId) {
+        alert('Please select a property first');
+        return;
+      }
+      
+      // Show loading state
+      nextAvailableButton.disabled = true;
+      nextAvailableButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+      
+      // Get existing bookings for the selected property
+      fetch(`/booking/api/next-available-date/${propertyId}/`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.next_available_date) {
+            startDateField.value = data.next_available_date;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Could not fetch next available date. Please try again.');
+        })
+        .finally(() => {
+          // Reset button state
+          nextAvailableButton.disabled = false;
+          nextAvailableButton.innerHTML = '<i class="fas fa-calendar-check"></i> Next';
+        });
     });
   });
 </script>

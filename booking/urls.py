@@ -29,4 +29,5 @@ urlpatterns = [
     
     # API
     path('api/property/<int:property_id>/monthly-stats/', views.api_get_monthly_stats, name='api_monthly_stats'),
+    path('api/next-available-date/<int:property_id>/', views.next_available_date, name='next_available_date'),
 ] 

@@ -5,7 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.db.models import Sum
 from django.http import JsonResponse
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import calendar
 import json
 
@@ -280,3 +280,47 @@ class BookingExpenseCreateView(generic.CreateView):
     
     def get_success_url(self):
         return reverse_lazy('booking_update', kwargs={'pk': self.kwargs.get('booking_id')})
+
+def next_available_date(request, property_id):
+    """API endpoint to get the next available date for a property"""
+    try:
+        # Start from today
+        current_date = date.today()
+        
+        # Get all future bookings for this property
+        future_bookings = Booking.objects.filter(
+            property_id=property_id,
+            end_date__gte=current_date
+        ).order_by('start_date')
+        
+        # If no future bookings, today is available
+        if not future_bookings.exists():
+            return JsonResponse({'next_available_date': current_date.isoformat()})
+        
+        # Check if today is available (not in any booking)
+        today_is_booked = any(
+            booking.start_date <= current_date <= booking.end_date
+            for booking in future_bookings
+        )
+        
+        if not today_is_booked:
+            return JsonResponse({'next_available_date': current_date.isoformat()})
+        
+        # Iterate through bookings to find the first available gap
+        last_end_date = None
+        for booking in future_bookings:
+            if last_end_date and booking.start_date > (last_end_date + timedelta(days=1)):
+                # Found a gap, return day after last booking ended
+                next_date = last_end_date + timedelta(days=1)
+                return JsonResponse({'next_available_date': next_date.isoformat()})
+            
+            # Update last_end_date if current booking ends later
+            if not last_end_date or booking.end_date > last_end_date:
+                last_end_date = booking.end_date
+        
+        # If no gaps found, return day after the last booking ends
+        next_date = last_end_date + timedelta(days=1)
+        return JsonResponse({'next_available_date': next_date.isoformat()})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
