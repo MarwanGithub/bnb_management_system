@@ -1,0 +1,19 @@
+# Python cache files
+__pycache__/
+*.pyc
+
+# Database file (if you don't want to track its changes, which is typical)
+db.sqlite3
+
+# Other common Django/Python ignores (optional but good practice)
+*.log
+*.pot
+*.py[cod]
+*.db
+local_settings.py
+.env
+venv/
+env/
+*.egg-info/
+build/
+dist/
